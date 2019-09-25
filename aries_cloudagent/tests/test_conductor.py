@@ -138,8 +138,11 @@ class TestConductor(AsyncTestCase, Config, TestDIDs):
         await conductor.setup()
 
         with async_mock.patch.object(
-            conductor.dispatcher, "dispatch", new_callable=async_mock.CoroutineMock
+            conductor.dispatcher, "dispatch", autospec=True
         ) as mock_dispatch:
+            dispatch_result = """{"@type": "..."}"""
+            mock_dispatch.return_value.return_value = asyncio.Future()
+            mock_dispatch.return_value.return_value.set_result(None)
 
             delivery = MessageDelivery()
             parsed_msg = {}
@@ -149,7 +152,8 @@ class TestConductor(AsyncTestCase, Config, TestDIDs):
 
             message_body = "{}"
             transport = "http"
-            await conductor.inbound_message_router(message_body, transport)
+            complete = await conductor.inbound_message_router(message_body, transport)
+            asyncio.wait_for(complete, 1.0)
 
             mock_serializer.parse_message.assert_awaited_once_with(
                 conductor.context, message_body, transport
@@ -197,7 +201,7 @@ class TestConductor(AsyncTestCase, Config, TestDIDs):
             complete = await conductor.inbound_message_router(
                 message_body, transport, None, single_response
             )
-            await asyncio.wait_for(complete, 1.0)
+            asyncio.wait_for(complete, 1.0)
 
             assert single_response.result() == dispatch_result
 
