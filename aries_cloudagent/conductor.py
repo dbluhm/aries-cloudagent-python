@@ -357,6 +357,35 @@ class Conductor:
             )
         return target
 
+    async def get_connection_target(
+        self, connection_id: str, context: InjectionContext = None
+    ):
+        """Get a `ConnectionTarget` instance representing a connection.
+
+        Args:
+            connection_id: The connection record identifier
+            context: An optional injection context
+        """
+
+        context = context or self.context
+
+        try:
+            record = await ConnectionRecord.retrieve_by_id(context, connection_id)
+        except StorageNotFoundError as e:
+            raise MessagePrepareError(
+                "Could not locate connection record: {}".format(connection_id)
+            ) from e
+        mgr = ConnectionManager(context)
+        try:
+            target = await mgr.get_connection_target(record)
+        except ConnectionManagerError as e:
+            raise MessagePrepareError(str(e)) from e
+        if not target:
+            raise MessagePrepareError(
+                "No target found for connection: {}".format(connection_id)
+            )
+        return target
+
     async def prepare_outbound_message(
         self,
         message: OutboundMessage,
@@ -433,6 +462,14 @@ class Conductor:
 
         # deliver directly to endpoint
         if message.endpoint:
+            try:
+                await self.prepare_outbound_message(message, context)
+            except MessagePrepareError:
+                self.logger.exception(
+                    "Error preparing outbound message for transmission"
+                )
+                return
+
             await self.outbound_transport_manager.send_message(message)
             return
 
