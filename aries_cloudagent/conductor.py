@@ -457,19 +457,13 @@ class Conductor:
         try:
             await self.prepare_outbound_message(message, context)
         except MessagePrepareError:
-            self.logger.exception("Error preparing outbound message for transmission")
+            self.logger.exception(
+                "Error preparing outbound message for transmission"
+            )
             return
 
         # deliver directly to endpoint
         if message.endpoint:
-            try:
-                await self.prepare_outbound_message(message, context)
-            except MessagePrepareError:
-                self.logger.exception(
-                    "Error preparing outbound message for transmission"
-                )
-                return
-
             await self.outbound_transport_manager.send_message(message)
             return
 
