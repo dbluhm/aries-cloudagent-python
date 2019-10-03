@@ -11,6 +11,8 @@ from ...wallet.base import BaseWallet, DIDInfo
 from ..models.base_record import BaseRecord, BaseRecordSchema
 from ...wallet.error import WalletNotFoundError
 
+LOGGER = logging.getLogger(__name__)
+
 PROTOCOL = 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/admin-dids/1.0'
 
 GET_LIST_DIDS = '{}/get-list-dids'.format(PROTOCOL)
