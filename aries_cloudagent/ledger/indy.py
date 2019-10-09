@@ -141,6 +141,21 @@ class IndyLedger(BaseLedger):
         ):
             await indy.pool.create_pool_ledger_config(self.pool_name, pool_config)
 
+    async def delete_pool_config(self):
+        """Delete the current pool config"""
+        if await self.check_pool_config():
+            self.logger.debug("Removing existing ledger config")
+            await indy.pool.delete_pool_ledger_config(self.pool_name)
+        else:
+            raise LedgerConfigError(
+                "Ledger pool configuration does not exist: %s", self.pool_name
+            )
+
+    @staticmethod
+    async def list_pools():
+        """Return a list of pool names"""
+        return [cfg["pool"] for cfg in await indy.pool.list_pools()]
+
     async def check_pool_config(self) -> bool:
         """Check if a pool config has been created."""
         pool_names = {cfg["pool"] for cfg in await indy.pool.list_pools()}

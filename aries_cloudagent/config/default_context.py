@@ -87,6 +87,10 @@ class DefaultContextBuilder(ContextBuilder):
                         "get_schema",
                         "send_credential_definition",
                         "send_schema",
+                        "open",
+                        "close",
+                        "create_pool_config",
+                        "delete_pool_config"
                     ),
                 )
             ),

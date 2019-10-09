@@ -33,6 +33,7 @@ from .messaging.admin.static_connections import \
         MESSAGE_TYPES as STATIC_CONN_ADMIN_MESSAGES
 from .messaging.admin.schemas import MESSAGE_TYPES as SCHEMA_ADMIN_MESSAGES
 from .messaging.admin.dids import MESSAGE_TYPES as DID_ADMIN_MESSAGES
+from .messaging.admin.ledgers.indy import MESSAGE_TYPES as INDY_LEDGER_MESSAGES
 
 
 def default_protocol_registry() -> ProtocolRegistry:
@@ -55,6 +56,7 @@ def default_protocol_registry() -> ProtocolRegistry:
         STATIC_CONN_ADMIN_MESSAGES,
         SCHEMA_ADMIN_MESSAGES,
         DID_ADMIN_MESSAGES,
+        INDY_LEDGER_MESSAGES,
         {PROBLEM_REPORT: ProblemReport},
     )
 
