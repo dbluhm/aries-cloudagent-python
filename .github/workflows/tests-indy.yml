@@ -25,7 +25,7 @@ jobs:
     needs: info
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10"]
 
@@ -63,6 +63,7 @@ jobs:
             indy_sdk_url=${{ needs.info.outputs.indy-sdk-url }}
           cache-from: type=local,src=/tmp/.buildx-cache-base
           cache-to: type=local,dest=/tmp/.buildx-cache-base-new,mode=max
+          outputs: type=image
 
       - name: Build test image
         uses: docker/build-push-action@v3
@@ -75,6 +76,7 @@ jobs:
             base_image=indy-python:latest
           cache-from: type=local,src=/tmp/.buildx-cache-test
           cache-to: type=local,dest=/tmp/.buildx-cache-test-new,mode=max
+          outputs: type=image
 
 
       # Temp fix
