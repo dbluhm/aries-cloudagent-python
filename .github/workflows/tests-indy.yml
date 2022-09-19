@@ -6,20 +6,6 @@ env:
   INDY_VERSION: 1.16.0
 
 jobs:
-  info:
-    name: Gather image info
-    runs-on: ubuntu-latest
-    outputs:
-      indy-version: ${{ steps.info.outputs.indy-version }}
-      indy-sdk-url: ${{ steps.info.outputs.indy-sdk-url }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Gather image info
-        id: info
-        run: |
-          echo "::set-output name=indy-version::${{env.INDY_VERSION}}"
-          echo "::set-output name=indy-sdk-url::https://codeload.github.com/hyperledger/indy-sdk/tar.gz/refs/tags/v${{ env.INDY_VERSION }}"
-
   tests:
     name: Publish base image
     needs: info
@@ -31,6 +17,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Gather image info
+        id: info
+        run: |
+          echo "::set-output name=indy-version::${{env.INDY_VERSION}}"
+          echo "::set-output name=indy-sdk-url::https://codeload.github.com/hyperledger/indy-sdk/tar.gz/refs/tags/v${{ env.INDY_VERSION }}"
+
       - name: Cache base image layers
         uses: actions/cache@v3
         with:
@@ -53,22 +46,21 @@ jobs:
       - name: Build base image
         uses: docker/build-push-action@v3
         with:
-          push: false
+          load: true
           context: .
           file: docker/Dockerfile.indy-base
           tags: indy-python:latest
           build-args: |
             python_version=${{ matrix.python-version }}
-            indy_version=${{ needs.info.outputs.indy-version }}
-            indy_sdk_url=${{ needs.info.outputs.indy-sdk-url }}
+            indy_version=${{ steps.info.outputs.indy-version }}
+            indy_sdk_url=${{ steps.info.outputs.indy-sdk-url }}
           cache-from: type=local,src=/tmp/.buildx-cache-base
           cache-to: type=local,dest=/tmp/.buildx-cache-base-new,mode=max
-          outputs: type=image
 
       - name: Build test image
         uses: docker/build-push-action@v3
         with:
-          push: false
+          load: true
           context: .
           file: docker/Dockerfile.test-indy
           tags: acapy-test:latest
@@ -76,8 +68,6 @@ jobs:
             base_image=indy-python:latest
           cache-from: type=local,src=/tmp/.buildx-cache-test
           cache-to: type=local,dest=/tmp/.buildx-cache-test-new,mode=max
-          outputs: type=image
-
 
       # Temp fix
       # https://github.com/docker/build-push-action/issues/252
