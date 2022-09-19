@@ -7,8 +7,7 @@ env:
 
 jobs:
   tests:
-    name: Publish base image
-    needs: info
+    name: Tests
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
