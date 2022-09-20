@@ -57,4 +57,4 @@ jobs:
 
       - name: Run pytest
         run: |
-          docker run --rm -it acapy-test:latest
+          docker run --rm acapy-test:latest
