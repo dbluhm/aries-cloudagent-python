@@ -51,7 +51,7 @@ jobs:
 
       - name: Setup Base Image Metadata
         if: steps.image-exists.outputs.exists != 'true'
-        id: base-meta
+        id: meta
         uses: docker/metadata-action@v3
         with:
           images: |
@@ -67,8 +67,8 @@ jobs:
           push: true
           context: .
           file: docker/Dockerfile
-          tags: ${{ steps.base-meta.outputs.tags }}
-          labels: ${{ steps.base-meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             python_version=${{ env.PYTHON_VERSION }}
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -81,4 +81,4 @@ jobs:
         if: steps.image-exists.outputs.exists != 'true'
         run: |
           rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache-base
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
