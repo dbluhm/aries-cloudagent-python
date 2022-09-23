@@ -49,8 +49,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Image Metadata (manual)
-        if: github.event_name == "workflow_dispatch"
-        id: meta
+        if: github.event_name == 'workflow_dispatch'
+        id: dispatch-meta
         uses: docker/metadata-action@v3
         with:
           images: |
@@ -59,7 +59,7 @@ jobs:
             type=raw,value=${{ inputs.tag }}
 
       - name: Setup Image Metadata (release)
-        if: github.event_name == "release"
+        if: github.event_name == 'release'
         id: meta
         uses: docker/metadata-action@v3
         with:
@@ -74,7 +74,7 @@ jobs:
           push: true
           context: .
           file: docker/Dockerfile
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.dispatch-meta.outputs.tags || steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             python_version=${{ matrix.python-version }}
