@@ -1,6 +1,8 @@
-name: Tests (Indy)
+name: Nightly Tests (Indy)
 on:
-  pull_request:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 env:
   INDY_VERSION: 1.16.0
@@ -43,7 +45,7 @@ jobs:
           tags: acapy-test:latest
           build-args: |
             python_version=${{ matrix.python-version }}
-            indy_version=${{ steps.info.outputs.indy-version }}
+            indy_version=${{ env.INDY_VERSION }}
           cache-from: type=local,src=/tmp/.buildx-cache-test
           cache-to: type=local,dest=/tmp/.buildx-cache-test-new,mode=max
 
