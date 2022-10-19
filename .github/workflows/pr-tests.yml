@@ -3,11 +3,8 @@ name: Tests
 on:
   pull_request:
 
-env:
-  PYTHON_VERSION: "3.7"
-
 jobs:
   tests:
     uses: ./.github/workflows/tests.yml
     with:
-      python-version: ${{ env.PYTHON_VERSION }}
+      python-version: "3.7"

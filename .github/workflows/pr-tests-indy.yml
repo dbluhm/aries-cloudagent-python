@@ -1,14 +1,10 @@
 name: Tests (Indy)
 on:
   pull_request:
-env:
-  INDY_VERSION: "1.16.0"
-  PYTHON_VERSION: "3.7"
-
 
 jobs:
   tests:
     uses: ./.github/workflows/tests-indy.yml
     with:
-      python-version: ${{ env.PYTHON_VERSION }}
-      indy-version: ${{ env.INDY_VERSION }}
+      python-version: "3.7"
+      indy-version: "1.16.0"
