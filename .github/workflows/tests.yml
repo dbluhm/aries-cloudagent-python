@@ -9,7 +9,7 @@ on:
 
 jobs:
   tests:
-    name: Test ${{ inputs.python-version }}
+    name: Test Python ${{ inputs.python-version }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

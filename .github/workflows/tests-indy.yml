@@ -12,7 +12,7 @@ on:
 
 jobs:
   tests:
-    name: Test ${{ inputs.python-version }} on Indy ${{ inputs.indy-version }}
+    name: Test Python ${{ inputs.python-version }} on Indy ${{ inputs.indy-version }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
