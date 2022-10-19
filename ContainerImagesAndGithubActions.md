@@ -41,7 +41,7 @@ original BC Gov images) to the Standard image is outside of the scope of this
 document.
 
 The ACA-Py images built by this project are tagged to indicate which of the
-above variants it is. Other tags may also generated for use by developers.
+above variants it is. Other tags may also be generated for use by developers.
 
 Below is a table of all generated images and their tags:
 
