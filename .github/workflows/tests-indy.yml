@@ -12,7 +12,7 @@ on:
 
 jobs:
   tests:
-    name: Tests
+    name: Tests (Indy)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

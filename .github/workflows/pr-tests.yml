@@ -8,3 +8,9 @@ jobs:
     uses: ./.github/workflows/tests.yml
     with:
       python-version: "3.7"
+
+  tests-indy:
+    uses: ./.github/workflows/tests-indy.yml
+    with:
+      python-version: "3.7"
+      indy-version: "1.16.0"
