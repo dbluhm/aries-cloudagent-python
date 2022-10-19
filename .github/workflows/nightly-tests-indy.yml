@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  indy_version: 1.16.0
+  INDY_VERSION: "1.16.0"
 
 jobs:
   tests:
@@ -17,4 +17,4 @@ jobs:
     uses: ./.github/workflows/tests-indy.yml
     with:
       python-version: ${{ matrix.python-version }}
-      indy-version: ${{ env.indy_version }}
+      indy-version: ${{ env.INDY_VERSION }}
