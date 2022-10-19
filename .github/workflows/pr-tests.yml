@@ -5,12 +5,14 @@ on:
 
 jobs:
   tests:
+    name: Tests
     uses: ./.github/workflows/tests.yml
     with:
-      python-version: "3.7"
+      python-version: "3.6"
 
   tests-indy:
+    name: Tests (Indy)
     uses: ./.github/workflows/tests-indy.yml
     with:
-      python-version: "3.7"
+      python-version: "3.6"
       indy-version: "1.16.0"
