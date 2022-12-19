@@ -25,12 +25,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        os: ["ubuntu-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        include:
+          - os: "ubuntu-20.04"
+            python-version: "3.6"
 
     name: Publish (Indy)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - uses: ./.github/workflows/tests-indy.yml
+        with:
+          python-version: ${{ matrix.python-version }}
+          os: ${{ matrix.os }}
+          indy-version: "1.16.0"
 
       - name: Gather image info
         id: info
@@ -58,7 +68,7 @@ jobs:
       - name: Setup Image Metadata (manual)
         if: github.event_name == 'workflow_dispatch'
         id: dispatch-meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v4.1.1
         with:
           images: |
             ghcr.io/${{ steps.info.outputs.repo-owner }}/aries-cloudagent-python
@@ -68,7 +78,7 @@ jobs:
       - name: Setup Image Metadata (release)
         if: github.event_name == 'release'
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v4.1.1
         with:
           images: |
             ghcr.io/${{ steps.info.outputs.repo-owner }}/aries-cloudagent-python
