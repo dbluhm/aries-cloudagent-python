@@ -21,7 +21,25 @@ env:
   INDY_VERSION: 1.16.0
 
 jobs:
+  tests-indy:
+    name: Tests (Indy)
+    strategy:
+      fail-fast: true
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        include:
+          - os: "ubuntu-20.04"
+            python-version: "3.6"
+
+    uses: ./.github/workflows/tests-indy.yml
+    with:
+      python-version: ${{ matrix.python-version }}
+      os: ${{ matrix.os }}
+      indy-version: ${{ env.INDY_VERSION }}
+
   publish-image:
+    needs: tests-indy
     strategy:
       fail-fast: false
       matrix:
@@ -35,12 +53,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - uses: ./.github/workflows/tests-indy.yml
-        with:
-          python-version: ${{ matrix.python-version }}
-          os: ${{ matrix.os }}
-          indy-version: "1.16.0"
 
       - name: Gather image info
         id: info
