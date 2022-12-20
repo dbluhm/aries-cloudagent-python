@@ -29,6 +29,7 @@ jobs:
     with:
       python-version: ${{ matrix.python-version }}
       acapy-version: ${{ github.event.release.tag_name }}
+    secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
 
   tests-indy:
@@ -60,4 +61,5 @@ jobs:
       indy-version: "1.16.0"
       python-version: ${{ matrix.python-version }}
       acapy-version: ${{ github.event.release.tag_name }}
+    secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
