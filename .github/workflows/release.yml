@@ -1,0 +1,63 @@
+name: Release ACA-Py
+on:
+  release:
+    types: [published]
+
+jobs:
+  tests:
+    name: Test before release
+    strategy:
+      fail-fast: true
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        include:
+          - os: "ubuntu-20.04"
+            python-version: "3.6"
+    uses: ./.github/workflows/tests.yml
+    with:
+      python-version: ${{ matrix.python-version }}
+      os: ${{ matrix.os }}
+
+  publish-image:
+    needs: tests
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+    uses: ./.github/workflows/publish.yml
+    with:
+      python-version: ${{ matrix.python-version }}
+      acapy-version: ${{ github.event.release.tag_name }}
+      token: ${{ secrets.GITHUB_TOKEN }}
+
+  tests-indy:
+    name: Test before release (Indy)
+    strategy:
+      fail-fast: true
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        include:
+          - os: "ubuntu-20.04"
+            python-version: "3.6"
+
+    uses: ./.github/workflows/tests-indy.yml
+    with:
+      indy-version: "1.16.0"
+      python-version: ${{ matrix.python-version }}
+      os: ${{ matrix.os }}
+
+  publish-image-indy:
+    name: Publish Image (Indy)
+    needs: tests-indy
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+    uses: ./.github/workflows/publish-indy.yml
+    with:
+      indy-version: "1.16.0"
+      python-version: ${{ matrix.python-version }}
+      acapy-version: ${{ github.event.release.tag_name }}
+      token: ${{ secrets.GITHUB_TOKEN }}
